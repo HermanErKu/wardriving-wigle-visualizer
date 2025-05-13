@@ -9,7 +9,7 @@ def show_map_from_ssid():
     limit = request.args.get('limit', type=int, default=100)
 
     # Load the CSV data
-    df = pd.read_csv('/data.csv')
+    df = pd.read_csv('CSV FILE')
     df.columns = df.columns.str.strip()
 
     # Filter the dataframe for the given SSID
