@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>WiFi Map Viewer</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.11.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.11.1/mapbox-gl.js"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 50px; bottom: 0; width: 100%; }
+        #controls {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 10px;
+            background: white;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div id="controls">
+    <form method="get" action="/map">
+        SSID: <input type="text" name="ssid" value="{{ ssid }}">
+        Max Networks: <input type="number" name="limit" value="{{ limit }}" min="1" max="1000">
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+<div id="map"></div>
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiaGVybWFuZXJrdSIsImEiOiJjbTA0ZGduazQwNWlvMnFzMjk0aWR3a210In0.X3eU82iijHAFiH7hk2JkFg';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [8.0081923, 58.1545012],
+        zoom: 8
+    });
+
+    let arrayOfMarkers = {{ networks | tojson }};
+
+    arrayOfMarkers.forEach(element => {
+        const marker = new mapboxgl.Marker()
+            .setLngLat([element.CurrentLongitude, element.CurrentLatitude])
+            .addTo(map);
+
+        const popup = new mapboxgl.Popup({ offset: 25 })
+            .setHTML(`
+                <strong>SSID:</strong> ${element.SSID}<br>
+                <strong>Type:</strong> ${element.Type}<br>
+                <strong>Lat:</strong> ${element.CurrentLatitude}<br>
+                <strong>Lon:</strong> ${element.CurrentLongitude}
+            `);
+
+        marker.setPopup(popup);
+    });
+</script>
+
+</body>
+</html>
