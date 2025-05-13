@@ -28,7 +28,7 @@ def show_map_from_ssid():
     ]
 
     # Select relevant columns
-    df_filtered = filtered_df[['SSID', 'CurrentLatitude', 'CurrentLongitude', 'Type', 'MAC']].dropna()
+    df_filtered = filtered_df[['SSID', 'CurrentLatitude', 'CurrentLongitude', 'Type', 'MAC', 'Channel']].dropna()
 
     # Remove duplicate MAC addresses
     df_filtered = df_filtered.drop_duplicates(subset='MAC')
@@ -37,6 +37,7 @@ def show_map_from_ssid():
     df_filtered = df_filtered.head(limit)
 
     networks = df_filtered.to_dict(orient='records')
+    print(networks[0])
 
     return render_template('index.html', networks=networks, ssid=ssid, limit=limit, mapbox_token=mapbox_token)
 
